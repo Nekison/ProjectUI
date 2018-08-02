@@ -1,0 +1,46 @@
+.percentage {
+    display: flex;
+    min-width: 20%;
+    @media screen and (min-width: 1280px) and (min-height: 720px) {
+        position: absolute;
+        flex-direction: column;
+    }
+    @if screen and (max-height: 719px) {
+        flex-direction: row;
+    }
+}
+
+.circle {
+    min-width: 180px;
+    max-width: 100%;
+}
+
+.legend {
+    display: flex;
+    flex-flow: row wrap;
+    align-self: center;
+    min-width: 140px;
+    min-height: 74px;
+    width: 140px;
+    height: 74px;
+    padding: 14px;
+    background-color: rgb(200, 200, 200);
+    .completed {
+        background-color: rgb(6, 170, 214);
+        width: 20px;
+        height: 20px;
+    }
+    .pending {
+        background-color: rgb(210, 130, 10);
+        width: 20px;
+        height: 20px;
+    }
+    p {
+        font-weight: bolder;
+        font-size: 12px;
+        &:hover {
+            cursor: pointer;
+            font-style: italic;
+        }
+    }
+}

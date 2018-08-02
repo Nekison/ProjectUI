@@ -1,0 +1,77 @@
+<h1 style="text-align: left">Project Tracking</h1>
+
+<div class="div-Container">
+  <mat-form-field id="AutocompleteProject">
+    <input type="text" (change)="inputEmpty($event)" placeholder="Project" aria-label="Number" [formControl]="myControl" matInput
+      [matAutocomplete]="ProjectList">
+    <mat-autocomplete #ProjectList="matAutocomplete" (optionSelected)="projectChanged($event)" autoActiveFirstOption>
+      <mat-option matTooltip={{option}} *ngFor="let option of filteredOptions | async" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
+<div *ngIf="Hide" fxLayout="row wrap" fxLayoutAlign="center start">
+  <div>
+    <app-progress [phasesProject]="PhaseModel"></app-progress>
+  </div>
+  <div class="VivaTimeline">
+    <h1 class="project-title" LayoutAlign="center center">{{ DataProject.Title }}</h1>
+    <dl class="vertical-line">
+      <div *ngFor="let date of this.helperService.getMonthsInRange(DataProject.StartDate,DataProject.EndDate)">
+        <dt>{{date}}</dt>
+        <div *ngFor="let Phase of PhaseModel; let i = index">
+          <dd *ngIf="getValidate(Phase.EndDate,date)" [ngClass]="{'pos-right': i%2 != 0,'pos-left': i%2 == 0}" class="clearfix">
+            <div class="circ"></div>
+            <div class="time">{{Phase.EndDate | date: 'MMMM d'}}</div>
+            <div class="events" [ngClass]="{'ActivePhase':Phase.StatePhase == true}">
+              <div class="events-header">{{Phase.Title}}</div>
+              <div class="events-body" [ngClass]="{'PhasePassed': Phase.StatePhase == false}" ng-style="setStyles()">
+                <div class="row">
+                  <div class="events-desc">
+                    <div class="slide-phase">
+                      <h5 class="title-slide-phase">
+                        <i class="far fa-calendar-alt"></i>StartDate:
+                        <span class="start-date">{{helperService.DateFormat(Phase.StartDate)}}</span>
+                      </h5>
+                      <h5 class="title-slide-phase">
+                        <i class="far fa-calendar-alt"></i>EndDate:
+                        <span class="end-date">{{helperService.DateFormat(Phase.EndDate)}}</span>
+                      </h5>
+                      <div class="cnt-description-slide-phase">
+                        <i class="fas fa-align-left"></i>
+                        <h5 class="title-slide-phase">Description:</h5>
+                        <p>{{Phase.Description}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="events-desc">
+                    <div class="objectives-list" *ngFor="let obj of Phase.Objectives">
+                      <i [ngClass]="{'fa fa-check': obj.Completed == true, 'fas fa-circle': obj.Completed == false}"></i>
+                      <p>{{obj.Title}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="Phase.DemoUrl !== null && Phase.DemoUrl.length > 0">
+                  <div class="events-desc">
+                    <div class="content-video">
+                      <vg-player class="video-demo">
+                        <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls crossorigin>
+                          <source [src]="sanitizer.bypassSecurityTrustResourceUrl('http://localhost:44226'+ Phase.DemoUrl)" type="video/mp4">
+                        </video>
+                      </vg-player>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="events-footer">
+              </div>
+            </div>
+          </dd>
+        </div>
+      </div>
+    </dl>
+  </div>
+</div>

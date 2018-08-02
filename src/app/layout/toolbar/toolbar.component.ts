@@ -1,0 +1,43 @@
+import { Component, OnInit } from '@angular/core';
+import { ObservableMedia } from '@angular/flex-layout';
+import { HelperService } from '../../services/helper.service';
+import { UserService } from '../../services/user.service';
+
+@Component({
+  selector: 'app-toolbar',
+  templateUrl: './toolbar.component.html',
+  styleUrls: ['./toolbar.component.scss']
+})
+export class ToolbarComponent implements OnInit {
+
+  constructor(public media: ObservableMedia, public helperService: HelperService, private userService: UserService) { }
+  ngOnInit() {
+    this.userService.getUserByEmail(email).subscribe((user: User) => {
+      this.UserActive = user;
+      this.helperService.claims = user;
+      localStorage.setItem('user', JSON.stringify(user));
+      this.userService.UserActive = user.RoleID;
+      console.log(user);
+    });
+  }
+  SideNavToggle() {
+    this.helperService.SlideMenu.toggle();
+  }
+  sidenavState() {
+    const percentage = document.getElementsByClassName('percentage') as HTMLCollectionOf<HTMLElement>;
+    const legend = document.getElementsByClassName('legend') as HTMLCollectionOf<HTMLElement>;
+    if (percentage.length !== 0) {
+      if (this.helperService.SlideMenu.opened) {
+        percentage[0].setAttribute('style', 'position: fixed; top:200px; left:240px;');
+        legend[0].setAttribute('style', 'position: fixed; top:520px; left:332px;');
+      } else {
+        percentage[0].setAttribute('style', 'position: fixed; top:200px; left:2px;');
+        legend[0].setAttribute('style', 'position: fixed; top:520px; left:92px;');
+      }
+    }
+  }
+  GoStart() {
+    localStorage.removeItem('userToken');
+    // this.helperService.HideLayout = false;
+  }
+}

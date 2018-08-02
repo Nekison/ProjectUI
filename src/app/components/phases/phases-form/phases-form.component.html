@@ -1,0 +1,81 @@
+<mat-card>
+  <mat-card-header fxLayoutAlign="center start">
+    <mat-card-title>
+      <h1 mat-dialog-title>Edit Phase</h1>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content mat-dialog-content>
+    <!-- Phase Form -->
+    <form #phaseForm="ngForm" fxLayout="column">
+      <!-- Title -->
+      <mat-form-field>
+        <input matInput maxlength="150" placeholder="Title" name="Title" #Title="ngModel" [(ngModel)]="phaseService.selectedPhase.Title"
+          required pattern="^[a-zA-Z0-9].*">
+        <mat-hint align="end">{{Title.value?.length || 0}}/150</mat-hint>
+        <mat-error *ngIf="Title.invalid && Title.touched">
+          The title of phase is required
+        </mat-error>
+      </mat-form-field>
+      <!-- Description -->
+      <mat-form-field class="example-full-width">
+        <textarea matInput maxlength="1000" placeholder="Description" name="Description" #Description="ngModel" [(ngModel)]="phaseService.selectedPhase.Description"
+          matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5"></textarea>
+        <mat-hint align="end">{{Description.value?.length || 0}}/1000</mat-hint>
+      </mat-form-field>
+      <div fxLayoutAlign="space-between start">
+        <!-- Start-Date -->
+        <mat-form-field fxFlex="40%">
+          <input matInput name="StartDate" #StartDate="ngModel" [(ngModel)]="phaseService.selectedPhase.StartDate" [matDatepicker]="dateStart"
+            placeholder="Start Date" required>
+          <mat-datepicker-toggle matSuffix [for]="dateStart"></mat-datepicker-toggle>
+          <mat-datepicker #dateStart disabled="false"></mat-datepicker>
+          <mat-error *ngIf="StartDate.invalid && StartDate.touched">
+            Invalid date
+          </mat-error>
+        </mat-form-field>
+        <!-- End-Date -->
+        <mat-form-field fxFlex="40%">
+          <input matInput [min]="phaseService.selectedPhase.StartDate" name="EndDate" #EndDate="ngModel" [(ngModel)]="phaseService.selectedPhase.EndDate"
+            [matDatepicker]="dateEnd" placeholder="Estimated End Date" id="dateEnd" required>
+          <mat-datepicker-toggle matSuffix [for]="dateEnd"></mat-datepicker-toggle>
+          <mat-datepicker #dateEnd disabled="false"></mat-datepicker>
+          <mat-error *ngIf="EndDate.invalid && EndDate.touched">
+            Invalid date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Demo-Url -->
+      <mat-label>Demo Video</mat-label>
+      <mat-chip-list #chipList class="chips">
+        <mat-chip *ngIf="fileName.length > 0" (removed)="removeChipVideo()">
+          {{fileName}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
+      <div draggable="true" ngClass="{{dragAreaClass}}">
+          <div class="row">
+            <div class="col-md-12 text-center" >
+              <a href="javascript:void(0)" (click)="file.click()" >
+                Click to browse
+              </a>
+              Or Drag & Drop to upload your files
+              <input type="file"
+                     #file
+                     [multiple]="(maxFiles > 1)"
+                     (change) = "onFileChange($event)"
+                      style="display: none"/>
+            </div>
+          </div>
+        </div>
+        <mat-label>The file size is limited to 10 MB. Only .mp4, .ogg, .mov</mat-label>
+        <div class="row error" *ngIf="errors.length > 0">
+          <mat-error class="video-error" *ngFor="let err of errors">{{err}}</mat-error>
+        </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions fxLayoutAlign="center start">
+    <button mat-raised-button color="primary" [disabled]="!phaseForm.valid" (click)="updatePhase()">Accept</button>
+    <a mat-raised-button color="warn" (click)="onNoClick()">Cancel</a>
+  </mat-card-actions>
+</mat-card>

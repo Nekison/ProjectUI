@@ -1,0 +1,141 @@
+// VARIABLES
+$color-primary2: rgb(6, 170, 214);
+$color-dark: rgb(34, 45, 49);
+$color-primary:#174056;
+$color-header: #00313C;
+$color-ActivePhase: rgb(205, 220, 57);
+
+.div-Container{
+    width: 100%;
+    padding: 15px;
+    -webkit-box-shadow: 12px 11px 11px -10px rgba(99,96,99,1);
+    -moz-box-shadow: 12px 11px 11px -10px rgba(99,96,99,1);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 1%;
+}
+h1{
+    text-align: center;
+}
+#AutocompleteProject{
+    width: 45%;
+
+}
+
+.VivaTimeline{  
+    width:100%;
+    @media screen and (min-width: 1280px) and (min-height: 720px) {
+      min-height: calc(100vh - 340px); 
+      max-height: calc(100vh - 340px); 
+      padding-left: 20%;
+      padding-right: 20%;
+      overflow: auto;    
+  }
+}
+
+
+.VivaTimeline dl dt{
+    background: $color-header;
+    font-size: 16px;
+    width: 130px;
+    height: 40px;
+    padding-top: 10px;
+}
+.VivaTimeline dl dd .time{
+    color: $color-primary;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 5px;
+    width: 115px;
+}
+.VivaTimeline dl dd.pos-right .time{
+    margin-left: -120px;
+}
+
+@media screen and (max-width: 767px) {
+    .VivaTimeline dl dd .time{
+        padding: 0;
+    }
+    .VivaTimeline dl dd.pos-right .time{
+        margin-left: 10px;
+    }
+    .VivaTimeline dl dd.pos-left .time{
+        margin-left: 20px;
+    }
+
+}
+
+//------Active Phase Styles--------
+.VivaTimeline dl dd .ActivePhase{
+  background: $color-ActivePhase;
+}
+
+.VivaTimeline dl dd.pos-right .ActivePhase:before{
+  border-color: transparent $color-ActivePhase transparent transparent;
+}
+
+.VivaTimeline dl dd .ActivePhase:before{
+  border-color: transparent transparent transparent $color-ActivePhase;
+}
+
+/*Autor: Bismarck Franco*/
+.project-title {
+  font-size: 2.1em;
+  color: $color-primary;
+  font-weight: bold;
+}
+.vertical-line::before {
+  width: 5px;
+  background-color: $color-primary2;
+}
+
+.fas, .far, .fa {
+  color: green;
+  margin-right: 1em;
+  padding-top: 3px;
+}
+
+.objectives-list {
+  padding: 0 1em;
+  text-indent: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.slide-phase {
+  text-indent: 0;
+  & .title-slide-phase {
+    font-weight: bold;
+  }
+  & .cnt-description-slide-phase {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+  }
+  & .fas, .far {
+    margin-left: 1em;
+    color: $color-header;
+
+  }
+  & span, p {
+    padding: 0 1em;
+    font-weight: 100;
+  }
+  & .start-date {
+    margin-left: 12px;
+  }
+  & .end-date {
+    margin-left: 17px;
+  }
+}
+.fas.fa-circle::before {
+  font-size: 0.7em;
+  margin-right: 4px;
+}
+.video-demo {
+  width: 100%;
+}
+.content-video {
+    text-indent: 0;
+    height: 200px;
+    width: 100%;
+}
