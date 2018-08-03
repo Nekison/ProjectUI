@@ -34,6 +34,7 @@ import { ViewModelProject } from './models/viewmodelproject.model';
 import { ProjectService } from './services/project.service';
 import { HelperService } from './services/helper.service';
 import { ObjectiveService } from './services/objective.service';
+import { AuthGuardService } from './services/auth-guard.service';
 import { AuthService } from './services/auth.service';
 // Angular Material
 import { AngularMaterialModule } from './material/angular-material.module';
@@ -47,8 +48,9 @@ import { RolesAddComponent } from './components/roles/roles-add/roles-add.compon
 import { ProgressComponent } from './components/progress/progress.component';
 import { LoginComponent } from './login/login.component';
 import { SelectedValidator } from './Directives/client-owner-autocomplete.directive';
-
-
+import { AdminHomeComponent } from './components/homes/admin-home/admin-home.component';
+import { UserGuard } from './services/user.guard.service';
+import { ClientGuard } from './services/client.guard.service';
 
 @NgModule({
   declarations: [
@@ -73,7 +75,8 @@ import { SelectedValidator } from './Directives/client-owner-autocomplete.direct
     RolesAddComponent,
     ProgressComponent,
     LoginComponent,
-    SelectedValidator
+    SelectedValidator,
+    AdminHomeComponent,
   ],
   imports: [
     BrowserModule,

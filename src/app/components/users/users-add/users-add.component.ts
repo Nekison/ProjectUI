@@ -3,6 +3,7 @@ import { Validators, FormGroup, FormBuilder, EmailValidator } from '@angular/for
 // Services
 import { UserService } from '../../../services/user.service';
 import { RolService } from '../../../services/rol.service';
+import { HelperService } from '../../../services/helper.service';
 // Models
 import { User } from '../../../models/user.model';
 import { Rol } from '../../../models/rol';
@@ -20,7 +21,6 @@ import { ValidateEmailUnique } from '../../../validators/unique-email.validator'
   selector: 'app-users-add',
   templateUrl: './users-add.component.html',
   styleUrls: ['./users-add.component.scss'],
-  /*   providers: [ValidateEmailNotTaken] */
 })
 export class UsersAddComponent implements OnInit {
   titleForm = '';
@@ -30,7 +30,8 @@ export class UsersAddComponent implements OnInit {
   PasswordFormGroup: FormGroup;
   parentErrorStateMatcher = new ParentErrorStateMatcher();
   passwordPattern = '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}';
-  test: boolean;
+  placeholderPassword: string;
+  placeholderConfirmPass: string;
   constructor(
     public route: ActivatedRoute,
     public router: Router,
@@ -38,7 +39,7 @@ export class UsersAddComponent implements OnInit {
     public roleService: RolService,
     public snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
-    /*     private validateEmailNotTaken: ValidateEmailNotTaken */
+    private helperService: HelperService
   ) { }
   ngOnInit() {
     this.getRolesList();
@@ -47,6 +48,9 @@ export class UsersAddComponent implements OnInit {
   }
 
   buildForm() {
+    this.placeholderPassword = 'Password *';
+    this.placeholderConfirmPass = 'Confirm Password *';
+
     this.PasswordFormGroup = this.formBuilder.group({
       Password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
       ConfirmPassword: ['', Validators.required]
@@ -56,7 +60,8 @@ export class UsersAddComponent implements OnInit {
       UserID: [0],
       FirstName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9].*')]],
       LastName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9].*')]],
-      Email: ['', [Validators.required, Validators.email], ValidateEmailUnique.Validate(this.userService)],
+      Email: ['', [Validators.required, Validators.email],
+      ValidateEmailUnique.Validate(this.userService, 0)],
       RoleID: ['', Validators.required],
       Company: ['', Validators.pattern('^[a-zA-Z0-9].*')],
       Address: ['', Validators.pattern('^[a-zA-Z0-9].*')],
@@ -75,15 +80,18 @@ export class UsersAddComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.newFormEditUser();
-        }, 200);
+        }, 100);
         this.titleForm = 'Edit User';
       }
     });
   }
 
   newFormEditUser() {
+
+    this.placeholderPassword = 'Password';
+    this.placeholderConfirmPass = 'Confirm Password';
     this.registrationFormGroup.get('Active').enable();
-    this.registrationFormGroup.reset();
+
 
     this.PasswordFormGroup = this.formBuilder.group({
       Password: ['', [Validators.pattern(this.passwordPattern)]],
@@ -94,8 +102,8 @@ export class UsersAddComponent implements OnInit {
       UserID: [this.userService.selectedUser.UserID],
       FirstName: [this.userService.selectedUser.FirstName, [Validators.required, Validators.pattern('^[a-zA-Z0-9].*')]],
       LastName: [this.userService.selectedUser.LastName, [Validators.required, Validators.pattern('^[a-zA-Z0-9].*')]],
-      Email: [this.userService.selectedUser.Email, [Validators.required, Validators.email],
-      ValidateEmailUnique.Validate(this.userService)],
+      Email: [this.userService.selectedUser.Email,
+      [Validators.required, Validators.email], ValidateEmailUnique.Validate(this.userService, this.userService.selectedUser.UserID )],
       RoleID: [this.userService.selectedUser.RoleID, Validators.required],
       Company: [this.userService.selectedUser.Company, Validators.pattern('^[a-zA-Z0-9].*')],
       Address: [this.userService.selectedUser.Address, Validators.pattern('^[a-zA-Z0-9].*')],
@@ -105,6 +113,7 @@ export class UsersAddComponent implements OnInit {
       Active: [this.userService.selectedUser.Active],
       PasswordFormGroup: this.PasswordFormGroup
     });
+
   }
 
   openSnackBar(message: string) {
@@ -133,6 +142,7 @@ export class UsersAddComponent implements OnInit {
 
   // For save users
   submitUsers() {
+    this.helperService.removeWhiteSpaces(this.registrationFormGroup);
     if (this.registrationFormGroup.controls.UserID.value) {
       this.editUsers();
     } else {
@@ -149,12 +159,8 @@ export class UsersAddComponent implements OnInit {
       });
   }
   editUsers() {
-    console.log(this.PasswordFormGroup.value.Password);
-    if (this.PasswordFormGroup.value.Password === '') {
-      this.registrationFormGroup.value.Password = this.userService.selectedUser.Password;
-    } else {
-      this.registrationFormGroup.value.Password = this.PasswordFormGroup.value.Password;
-    }
+
+    this.registrationFormGroup.value.Password = this.PasswordFormGroup.value.Password;
 
     this.userService.updateUser(this.registrationFormGroup.value)
       .subscribe(good => {

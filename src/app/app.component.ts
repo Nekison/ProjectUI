@@ -14,16 +14,13 @@ export class AppComponent implements OnInit {
     private userService: UserService
   ) {
     helper.Ocultar = false;
-
   }
 
   ngOnInit() {
-    console.log(this.userService.UserActive);
   }
 
   TokenActive(): boolean {
     let active = true;
-
     if (localStorage.getItem('userToken') === null) {
       active = false;
     }

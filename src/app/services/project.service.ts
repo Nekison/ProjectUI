@@ -11,6 +11,7 @@ import { ViewModelProject } from '../models/viewmodelproject.model';
 export class ProjectService {
 
   selectedProject: Project;
+  selectedProjectHome: Project;
   projectList: Project[];
   private apiURL = 'http://localhost:44226/api/Projects/';
 
@@ -32,6 +33,18 @@ export class ProjectService {
 
   getProjectsList(): Observable<Project[]> {
     return this.http.get(`${this.apiURL}GetProjects/`).pipe(map((data: Response) => <Project[]>data.json()));
+  }
+  getProjectsListPO(OwnerID: number): Observable<Project[]> {
+    return this.http.get(`${this.apiURL}GetProjectsPO/${OwnerID}`).pipe(map((data: Response) => <Project[]>data.json()));
+  }
+  getProjectsListCL(UserID: number): Observable<Project[]> {
+    return this.http.get(`${this.apiURL}GetProjectsCL/${UserID}`).pipe(map((data: Response) => <Project[]>data.json()));
+  }
+  getArchivedProjectsList(): Observable<Project[]> {
+    return this.http.get(`${this.apiURL}GetArchivedProjects/`).pipe(map((data: Response) => <Project[]>data.json()));
+  }
+  getArchivedProjectsListPO(OwnerID: number): Observable<Project[]> {
+    return this.http.get(`${this.apiURL}GetArchivedProjectsPO/${OwnerID}`).pipe(map((data: Response) => <Project[]>data.json()));
   }
 
   putProjectDeletePasive(id) {

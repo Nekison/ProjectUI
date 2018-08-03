@@ -1,15 +1,15 @@
-import { User } from '../models/user.model';
+import { Phase } from '../models/phase.model';
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 
-export function isSelectedValid(ListFiltered: User[]): ValidatorFn {
+export function PhaseValidate(ListFiltered: Phase[]): ValidatorFn {
   if (ListFiltered !== undefined) {
     const ListID = [];
     ListFiltered.forEach(element => {
-      ListID.push(element.UserID.toString());
+      ListID.push(element.PhaseID.toString());
     });
     return function (control: AbstractControl): {[Key: string]: any} {
       if (control.dirty && typeof control.value === 'string' && control.value.length > 0) {
-        return ListID.lastIndexOf(control.value.split(',').pop()) !== -1 ? null : {'isSelectedValid': true};
+        return ListID.lastIndexOf(control.value) !== -1 ? null : {'PhaseValidate': true};
       } else {
         return null;
       }

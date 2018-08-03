@@ -1,6 +1,6 @@
 // Config
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -18,7 +18,6 @@ import { UserService } from '../../../services/user.service';
 import { Project } from '../../../models/project.model';
 import { Phase } from '../../../models/phase.model';
 import { User } from '../../../models/user.model';
-import { ViewModelProject } from '../../../models/viewmodelproject.model';
 // Components
 import { PhasesFormComponent } from '../../phases/phases-form/phases-form.component';
 import { DialogConfirmationComponent } from '../../dialog/dialog-confirmation/dialog-confirmation.component';
@@ -42,6 +41,7 @@ export class ProjectAddComponent implements OnInit {
   titleForm = '';
   listClient: User[];
   filteredClient: Observable<User[]>;
+  errorDisplayClient: boolean;
   listOwner: User[];
   filteredOwner: Observable<User[]>;
   project = new Project();
@@ -82,7 +82,7 @@ export class ProjectAddComponent implements OnInit {
 
   DeleteRow(dataPhases) {
     const dialogRef = this.dialog.open(DialogConfirmationComponent, {
-      data: {title: 'Please confirm...', description: 'Are you sure you want to remove this item?'}
+      data: { title: 'Please confirm...', description: 'Are you sure you want to remove this item?' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -96,11 +96,18 @@ export class ProjectAddComponent implements OnInit {
     });
   }
 
+  trimSelectedPhase() {
+    const phase = this.phaseService.phaseList;
+    const index = this.phaseService.indexPhase;
+    this.helperService.removeWhiteSpacesArray(phase[index]);
+  }
+
   openDialog(dataPhases) {
     this.phaseService.indexPhase = this.phaseService.phaseList.indexOf(dataPhases);
     this.getSelectedPhase(dataPhases);
     const dialogRef = this.dialog.open(PhasesFormComponent);
     dialogRef.afterClosed().subscribe(result => {
+      this.trimSelectedPhase();
       this.dataSource = new MatTableDataSource(this.phaseService.phaseList);
     });
   }
@@ -112,6 +119,7 @@ export class ProjectAddComponent implements OnInit {
     });
   }
   onSubmit() {
+    this.helperService.removeWhiteSpaces(this.projectFG);
     this.getUserIdtoSaveProject(this.listClient, this.projectFG.value.UserId);
     this.getUserIdtoSaveProject(this.listOwner, this.projectFG.value.OwnerId);
     this.project = this.projectFG.value;
@@ -155,19 +163,19 @@ export class ProjectAddComponent implements OnInit {
   filter(value: string, type: number): User[] {
     const filterValue = value.toString().toLowerCase();
     return type === 0 ?
-            this.listClient.filter(option => option.FirstName.toLowerCase().includes(filterValue)) :
-            this.listOwner.filter(option => option.FirstName.toLowerCase().includes(filterValue));
+      this.listClient.filter(option => option.FirstName.toLowerCase().includes(filterValue)) :
+      this.listOwner.filter(option => option.FirstName.toLowerCase().includes(filterValue));
   }
 
   displayNameClient(UserID) {
     if (!UserID) { return ''; }
-    const index = this.listClient.findIndex(client => client.UserID === UserID);
+    const index = this.listClient.findIndex(client => client.UserID.toString() === UserID.split(',').pop());
     return this.listClient[index].FirstName;
   }
 
   displayNameOwner(OwnerID) {
     if (!OwnerID) { return ''; }
-    const index = this.listOwner.findIndex(owner => owner.UserID === OwnerID);
+    const index = this.listOwner.findIndex(owner => owner.UserID.toString() === OwnerID.split(',').pop());
     return this.listOwner[index].FirstName;
   }
 
@@ -176,7 +184,7 @@ export class ProjectAddComponent implements OnInit {
       this.listClient = datalist;
       this.filteredClient = this.projectFG.controls.UserId.valueChanges.pipe(
         startWith(''), map(value => value ? this.filter(value, 0) : this.listClient));
-      this.projectFG.controls['UserId'].setValidators([isSelectedValid(this.listClient)]);
+      this.projectFG.controls['UserId'].setValidators([isSelectedValid(this.listClient), Validators.pattern(/^[a-zA-Z].*/)]);
     }, error => { console.log(error); });
   }
 
@@ -185,7 +193,7 @@ export class ProjectAddComponent implements OnInit {
       this.listOwner = datalist;
       this.filteredOwner = this.projectFG.controls.OwnerId.valueChanges.pipe(
         startWith(''), map(value => value ? this.filter(value, 1) : this.listOwner));
-      this.projectFG.controls['OwnerId'].setValidators([isSelectedValid(this.listOwner)]);
+      this.projectFG.controls['OwnerId'].setValidators([isSelectedValid(this.listOwner), Validators.pattern(/^[a-zA-Z].*/)]);
     }, error => { console.log(error); });
   }
 

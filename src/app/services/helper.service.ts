@@ -12,7 +12,6 @@ export class HelperService {
   formats: {};
   SlideMenu: any;
   Ocultar: Boolean;
-  claims: User;
   constructor() {
     this.formats = {
       parse: {
@@ -75,7 +74,7 @@ export class HelperService {
     );
   }
 
-  removeWhiteSpaces(formGroup: FormGroup, ) {
+  removeWhiteSpaces(formGroup: FormGroup) {
     const controls = formGroup.controls;
     for (const key in controls) {
       if (controls.hasOwnProperty(key)) {
@@ -86,7 +85,17 @@ export class HelperService {
     }
   }
 
-  replaceWhiteSpaces(formGroup: FormGroup, ) {
+  removeWhiteSpacesArray(array: any) {
+    for (const key in array) {
+      if (array.hasOwnProperty(key)) {
+        if (typeof array[key] === 'string') {
+          array[key] = array[key].trim();
+        }
+      }
+    }
+  }
+
+  replaceWhiteSpaces(formGroup: FormGroup) {
     const controls = formGroup.controls;
     for (const key in controls) {
       if (controls.hasOwnProperty(key)) {

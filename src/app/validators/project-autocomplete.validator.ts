@@ -1,15 +1,15 @@
-import { User } from '../models/user.model';
+import { Project } from '../models/project.model';
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 
-export function isSelectedValid(ListFiltered: User[]): ValidatorFn {
+export function ProjectValidate(ListFiltered: Project[]): ValidatorFn {
   if (ListFiltered !== undefined) {
     const ListID = [];
     ListFiltered.forEach(element => {
-      ListID.push(element.UserID.toString());
+      ListID.push(element.ProjectID.toString());
     });
     return function (control: AbstractControl): {[Key: string]: any} {
       if (control.dirty && typeof control.value === 'string' && control.value.length > 0) {
-        return ListID.lastIndexOf(control.value.split(',').pop()) !== -1 ? null : {'isSelectedValid': true};
+        return ListID.lastIndexOf(control.value) !== -1 ? null : {'ProjectValidate': true};
       } else {
         return null;
       }

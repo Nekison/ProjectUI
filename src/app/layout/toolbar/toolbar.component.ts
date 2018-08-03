@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ObservableMedia } from '@angular/flex-layout';
+// Service
 import { HelperService } from '../../services/helper.service';
+import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -10,18 +12,22 @@ import { UserService } from '../../services/user.service';
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor(public media: ObservableMedia, public helperService: HelperService, private userService: UserService) { }
+  constructor(public media: ObservableMedia,
+    public helperService: HelperService,
+    private router: Router,
+    private userService: UserService
+  ) { }
+
   ngOnInit() {
-    this.userService.getUserByEmail(email).subscribe((user: User) => {
-      this.UserActive = user;
-      this.helperService.claims = user;
-      localStorage.setItem('user', JSON.stringify(user));
-      this.userService.UserActive = user.RoleID;
-      console.log(user);
-    });
+    this.get_UserName_Local_Storage();
   }
+
   SideNavToggle() {
     this.helperService.SlideMenu.toggle();
+  }
+  get_UserName_Local_Storage() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user.Email;
   }
   sidenavState() {
     const percentage = document.getElementsByClassName('percentage') as HTMLCollectionOf<HTMLElement>;
@@ -37,7 +43,7 @@ export class ToolbarComponent implements OnInit {
     }
   }
   GoStart() {
-    localStorage.removeItem('userToken');
-    // this.helperService.HideLayout = false;
+    localStorage.clear();
+    this.router.navigate(['/']);
   }
 }
